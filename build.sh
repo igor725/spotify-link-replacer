@@ -1,5 +1,5 @@
 #!/bin/bash
-cd dirname "$(readlink -f "$0")"
+cd $(dirname "$(readlink -f "$0")")
 if [ ! -f "node_modules/uglify-js/bin/uglifyjs" ]; then
 	npm install
 	if [ $? -ne 0 ]; then
