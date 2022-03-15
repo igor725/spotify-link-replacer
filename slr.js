@@ -12,8 +12,8 @@
 	const spotiRules = {
 		"vk.com": {
 			"url-check": "/im",
-			"msg-container": ".im-mess--text",
-			"msg-bloat": ".im_msg_media_link",
+			"link-selector": "div.im-mess--text > a",
+			"msg-bloat": "div.im-mess--text > div > div.im_msg_media_link",
 			"scroll-fixer": () => {
 				let se = document.scrollingElement;
 				if (se.scrollTopMax - se.scrollTop < 550) {
@@ -28,7 +28,7 @@
 		},
 		"web.telegram.org": {
 			"url-check": "/z/",
-			"msg-container": ".text-content",
+			"link-selector": "p.text-content > a.text-entity-link",
 			"scroll-fixer": () => {
 				let se = document.querySelector(".MessageList.scrolled");
 				if (se !== undefined && (se.scrollTopMax - se.scrollTop < 550)) {
@@ -121,36 +121,33 @@
 
 	setInterval(() => {
 		if (rules["url-check"] && location.pathname !== rules["url-check"]) return;
-		let links = Array.from(document.querySelectorAll("a:not([us-slr-processed='1'])"));
+		let links = Array.from(document.querySelectorAll(rules["link-selector"] + ":not([us-slr-processed='1'])"));
 
 		for (let i = 0; i < links.length; i++) {
 			let link = links[i];
 			if(!isVisible(link)) continue;
 
 			link.setAttribute("us-slr-processed", 1);
-			let message = link.closest(rules["msg-container"]);
+			let lurl = decodeURIComponent(link.href);
+			if (checkIsSpotifyLink(lurl)) {
+				let message = link.parentNode;
+				let ex = lurl.match(spotiRegex);
+				if (ex && ex.length > 2 && ex[2].length == spotiIDLength) {
+					runCallback("pre-process", {
+						"name": "message",
+						"message": message
+					});
 
-			if (message == link.parentNode) {
-				let lurl = decodeURIComponent(link.href);
-				if (checkIsSpotifyLink(lurl)) {
-					let ex = lurl.match(spotiRegex);
-					if (ex && ex.length > 2 && ex[2].length == spotiIDLength) {
-						runCallback("pre-process", {
-							"name": "message",
-							"message": message
-						});
+					let frame = createSpotiIframe(ex[1], ex[2]);
+					message.setAttribute("us-slr-processed", 1);
+					message.insertBefore(frame, link);
+					link.remove();
 
-						let frame = createSpotiIframe(ex[1], ex[2]);
-						message.setAttribute("us-slr-processed", 1);
-						message.insertBefore(frame, link);
-						link.remove();
-
-						runCallback("post-process", {
-							"name": "message",
-							"message": message,
-							"frame": frame
-						});
-					}
+					runCallback("post-process", {
+						"name": "message",
+						"message": message,
+						"frame": frame
+					});
 				}
 			}
 		}
