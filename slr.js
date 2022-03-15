@@ -1,3 +1,8 @@
+/* TODO:
+ *   - Добавить поддержку MutationObserver
+ *   - ???
+*/
+
 (function () {
 	const spotiUrl = "https://open.spotify.com/";
 	const spotiTypes = [ "track/", "episode/", "artist/", "album/", "show/", "playlist/" ];
@@ -31,20 +36,20 @@
 				}
 			},
 			"post-process": ({ frame, message }) => {
-				frame.style.overflow = 'hidden';
-				frame.style.marginTop = '0';
-				frame.style.borderRadius = '0.375rem';
+				frame.style.overflow = "hidden";
+				frame.style.marginTop = "0";
+				frame.style.borderRadius = "0.375rem";
 
-				frame.querySelector('iframe').style.marginTop = '0';
-				frame.querySelector('a').style.top = '0';
+				frame.querySelector("iframe").style.marginTop = "0";
+				frame.querySelector("a").style.top = "0";
 
 				let mesgContainer = message.parentNode.parentNode;
-				let mesgAppendix = mesgContainer.querySelector('.svg-appendix');
+				let mesgAppendix = mesgContainer.querySelector(".svg-appendix");
 				if(mesgAppendix) mesgAppendix.style.display = "none";
-				mesgContainer.style.background = 'transparent';
-				mesgContainer.style.padding = '0';
+				mesgContainer.style.background = "transparent";
+				mesgContainer.style.padding = "0";
 
-				message.querySelector('.MessageMeta').style.display = 'none';
+				message.querySelector(".MessageMeta").style.display = "none";
 			}
 		}
 	};
@@ -65,7 +70,7 @@
 	let createSpotiIframe = (type, id) => {
 		let link = type + "/" + id;
 		let maindiv = document.createElement("div");
-		maindiv.style.position = 'relative';
+		maindiv.style.position = "relative";
 		maindiv.style.height = (spotiSizes[type] || spotiSizes.default) + "px";
 
 		let frame = document.createElement("iframe");
@@ -77,18 +82,18 @@
 		frame.style.marginTop = "6px";
 		frame.style.minWidth = "380px";
 		frame.style.width = "100%";
-		frame.frameBorder = 0;
+		frame.style.border = "0px";
 
 		let euri = document.createElement("a");
-		euri.style.zIndex = '999';
-		euri.style.position = 'absolute';
-		euri.style.right = '0px';
-		euri.style.top = '6px';
-		euri.style.width = '30px';
-		euri.style.height = '35px';
-		euri.style.opacity = '0';
+		euri.style.zIndex = "999";
+		euri.style.position = "absolute";
+		euri.style.right = "0px";
+		euri.style.top = "6px";
+		euri.style.width = "30px";
+		euri.style.height = "35px";
+		euri.style.opacity = "0";
 		euri.href = "spotify:" + link;
-		euri.title = 'Play on Spotify';
+		euri.title = "Play on Spotify";
 
 		maindiv.appendChild(frame);
 		maindiv.appendChild(euri);
