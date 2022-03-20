@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Spotify link replacer
 // @namespace    https://igvx.ru/
-// @version      1.2
+// @version      1.3
 // @description  Tiny userscript that replaces Spotify links in chats with embeded player
 // @downloadURL  https://raw.githubusercontent.com/igor725/spotify-link-replacer/main/slr.user.js
 // @updateURL    https://raw.githubusercontent.com/igor725/spotify-link-replacer/main/slr.meta.js

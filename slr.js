@@ -31,7 +31,7 @@
 			"link-selector": "p.text-content > a.text-entity-link",
 			"scroll-fixer": () => {
 				let se = document.querySelector(".MessageList.scrolled");
-				if (se !== undefined && (se.scrollTopMax - se.scrollTop < 550)) {
+				if (se != undefined && (se.scrollTopMax - se.scrollTop < 550)) {
 					se.scrollTop = se.scrollTopMax;
 				}
 			},
@@ -44,12 +44,17 @@
 				frame.querySelector("a").style.top = "0";
 
 				let mesgContainer = message.parentNode.parentNode;
-				let mesgAppendix = mesgContainer.querySelector(".svg-appendix");
-				if(mesgAppendix) mesgAppendix.style.display = "none";
 				mesgContainer.style.background = "transparent";
 				mesgContainer.style.padding = "0";
 
-				message.querySelector(".MessageMeta").style.display = "none";
+				let mesgAppendix = mesgContainer.querySelector(".svg-appendix");
+				if(mesgAppendix) mesgAppendix.style.display = "none";
+
+				let mesgPage = mesgContainer.querySelector(".WebPage");
+				if(mesgPage) mesgPage.style.display = "none";
+
+				let mesgMeta = mesgContainer.querySelector(".MessageMeta");
+				if(mesgMeta) mesgMeta.style.display = "none";
 			}
 		}
 	};
