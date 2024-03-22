@@ -27,8 +27,8 @@
 			}
 		},
 		"web.telegram.org": {
-			"url-check": "/z/",
-			"link-selector": "p.text-content > a.text-entity-link",
+			"url-check": "/a/",
+			"link-selector": "div.text-content > a.text-entity-link",
 			"scroll-fixer": () => {
 				let se = document.querySelector(".MessageList.scrolled");
 				if (se != undefined && (se.scrollTopMax - se.scrollTop < 550)) {
@@ -38,7 +38,7 @@
 			"post-process": ({ frame, message }) => {
 				frame.style.overflow = "hidden";
 				frame.style.marginTop = "0";
-				frame.style.borderRadius = "0.375rem";
+				frame.style.borderRadius = "0.9rem";
 
 				frame.querySelector("iframe").style.marginTop = "0";
 				frame.querySelector("a").style.top = "0";
@@ -92,10 +92,10 @@
 		let euri = document.createElement("a");
 		euri.style.zIndex = "999";
 		euri.style.position = "absolute";
-		euri.style.right = "0px";
-		euri.style.top = "6px";
-		euri.style.width = "30px";
-		euri.style.height = "35px";
+		euri.style.right = "5px";
+		euri.style.top = "5px";
+		euri.style.width = "20px";
+		euri.style.height = "20px";
 		euri.style.opacity = "0";
 		euri.href = "spotify:" + link;
 		euri.title = "Play on Spotify";
