@@ -7,7 +7,7 @@
 // @updateURL    https://raw.githubusercontent.com/igor725/spotify-link-replacer/main/slr.meta.js
 // @author       igor725
 // @match        https://vk.com/*
-// @match        https://web.telegram.org/z/*
+// @match        https://web.telegram.org/a/*
 // @icon         https://spotify.com/favicon.ico
 // @grant        none
 // @run-at       document-end
