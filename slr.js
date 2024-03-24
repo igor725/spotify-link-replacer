@@ -15,22 +15,36 @@
 			"link-selector": "div.im-mess--text > a",
 			"msg-bloat": "div.im-mess--text > div > div.im_msg_media_link",
 			"scroll-fixer": () => {
-				let se = document.scrollingElement;
+				const se = document.scrollingElement;
 				if (se.scrollTopMax - se.scrollTop < 550) {
 					se.scrollTop = se.scrollTopMax;
 				}
 			},
-			"post-process": ({ name, self }) => {
+			"post-process": ({ frame, name, self }) => {
 				if (name === "bloat") {
 					self["scroll-fixer"]();
-				}
+				} else if (name === "message") {
+                    const hid = document.createElement('div');
+                    hid.style.zIndex = 998;
+                    hid.style.position = 'absolute';
+                    hid.style.top = '0px';
+                    hid.style.border = '10px var(--vkui--color_background_content) solid';
+                    hid.style.borderRadius = '0.9rem';
+                    hid.style.width = '99%';
+                    hid.style.height = '97%';
+                    hid.style.margin = '0';
+                    hid.style.padding = '0';
+                    hid.style.left = '-8px';
+                    hid.style.pointerEvents = 'none';
+                    frame.appendChild(hid);
+                }
 			}
 		},
 		"web.telegram.org": {
 			"url-check": "/a/",
 			"link-selector": "div.text-content > a.text-entity-link",
 			"scroll-fixer": () => {
-				let se = document.querySelector(".MessageList.scrolled");
+				const se = document.querySelector(".MessageList.scrolled");
 				if (se != undefined && (se.scrollTopMax - se.scrollTop < 550)) {
 					se.scrollTop = se.scrollTopMax;
 				}
@@ -43,17 +57,17 @@
 				frame.querySelector("iframe").style.marginTop = "0";
 				frame.querySelector("a").style.top = "0";
 
-				let mesgContainer = message.parentNode.parentNode;
+				const mesgContainer = message.parentNode.parentNode;
 				mesgContainer.style.background = "transparent";
 				mesgContainer.style.padding = "0";
 
-				let mesgAppendix = mesgContainer.querySelector(".svg-appendix");
+				const mesgAppendix = mesgContainer.querySelector(".svg-appendix");
 				if(mesgAppendix) mesgAppendix.style.display = "none";
 
-				let mesgPage = mesgContainer.querySelector(".WebPage");
+				const mesgPage = mesgContainer.querySelector(".WebPage");
 				if(mesgPage) mesgPage.style.display = "none";
 
-				let mesgMeta = mesgContainer.querySelector(".MessageMeta");
+				const mesgMeta = mesgContainer.querySelector(".MessageMeta");
 				if(mesgMeta) mesgMeta.style.display = "none";
 			}
 		}
@@ -66,19 +80,19 @@
 	}
 
 	let checkIsSpotifyLink = (t) => {
-		let urlPos = t.indexOf(spotiUrl);
+		const urlPos = t.indexOf(spotiUrl);
 		if (urlPos == -1) return false;
-		let pos = spotiUrl.length + urlPos;
+		const pos = spotiUrl.length + urlPos;
 		return spotiTypes.find(el => t.indexOf(el, pos) == pos);
 	}
 
 	let createSpotiIframe = (type, id) => {
-		let link = type + "/" + id;
-		let maindiv = document.createElement("div");
+		const link = type + "/" + id;
+		const maindiv = document.createElement("div");
 		maindiv.style.position = "relative";
 		maindiv.style.height = (spotiSizes[type] || spotiSizes.default) + "px";
 
-		let frame = document.createElement("iframe");
+		const frame = document.createElement("iframe");
 		if (rules["scroll-fixer"] !== undefined)
 			frame.addEventListener("load", rules["scroll-fixer"]);
 		frame.style.height = "100%";
@@ -89,12 +103,12 @@
 		frame.style.width = "100%";
 		frame.style.border = "0px";
 
-		let euri = document.createElement("a");
+		const euri = document.createElement("a");
 		euri.style.zIndex = "999";
 		euri.style.position = "absolute";
-		euri.style.right = "5px";
-		euri.style.top = "5px";
-		euri.style.width = "20px";
+		euri.style.right = "8px";
+		euri.style.top = "15px";
+		euri.style.width = "16px";
 		euri.style.height = "20px";
 		euri.style.opacity = "0";
 		euri.href = "spotify:" + link;
@@ -106,15 +120,15 @@
 		return maindiv;
 	}
 
-	let runCallback = (name, obj) => {
+	const runCallback = (name, obj) => {
 		if (rules[name]) {
 			obj.self = rules;
 			return rules[name](obj);
 		}
 	}
 
-	let isVisible = (el) => {
-		let bounds = el.getBoundingClientRect();
+	const isVisible = (el) => {
+		const bounds = el.getBoundingClientRect();
 
 		return (
 			bounds.top >= 0 &&
@@ -126,24 +140,24 @@
 
 	setInterval(() => {
 		if (rules["url-check"] && location.pathname !== rules["url-check"]) return;
-		let links = Array.from(document.querySelectorAll(rules["link-selector"] + ":not([us-slr-processed='1'])"));
+		const links = Array.from(document.querySelectorAll(rules["link-selector"] + ":not([us-slr-processed='1'])"));
 
 		for (let i = 0; i < links.length; i++) {
-			let link = links[i];
+			const link = links[i];
 			if(!isVisible(link)) continue;
 
 			link.setAttribute("us-slr-processed", 1);
-			let lurl = decodeURIComponent(link.href);
+			const lurl = decodeURIComponent(link.href);
 			if (checkIsSpotifyLink(lurl)) {
-				let message = link.parentNode;
-				let ex = lurl.match(spotiRegex);
+				const message = link.parentNode;
+				const ex = lurl.match(spotiRegex);
 				if (ex && ex.length > 2 && ex[2].length == spotiIDLength) {
 					runCallback("pre-process", {
 						"name": "message",
 						"message": message
 					});
 
-					let frame = createSpotiIframe(ex[1], ex[2]);
+					const frame = createSpotiIframe(ex[1], ex[2]);
 					message.setAttribute("us-slr-processed", 1);
 					message.insertBefore(frame, link);
 					link.remove();
@@ -158,13 +172,13 @@
 		}
 
 		if (rules["msg-bloat"] !== undefined) {
-			let medialinks = Array.from(document.querySelectorAll(rules["msg-bloat"] + ":not([us-slr-processed='1'])"));
+			const medialinks = Array.from(document.querySelectorAll(rules["msg-bloat"] + ":not([us-slr-processed='1'])"));
 			for (let i = 0; i < medialinks.length; i++) {
-				let medialink = medialinks[i];
-				let upperDiv = medialink.parentNode;
+				const medialink = medialinks[i];
+				const upperDiv = medialink.parentNode;
 				medialink.setAttribute("us-slr-processed", 1);
 				if (upperDiv) {
-					let messText = upperDiv.parentNode;
+					const messText = upperDiv.parentNode;
 					if (messText.getAttribute("us-slr-processed") == 1) {
 						upperDiv.remove();
 						runCallback("post-process", {
